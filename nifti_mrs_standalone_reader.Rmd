@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-The purpose of this document is to demonstrate how NIfTI MRS can be imported into the [`R`](https://www.r-project.org/) programming language, and perform basic processing steps with just few lines of code. Whilst a dedicated MRS analysis packages, such as [`spant`](https://martin3141.github.io/spant/), are recommended for typical MRS analysis tasks in [`R`](https://www.r-project.org/), this example code is provided to aid software developers interested in developing their own tools to process NIfTI MRS files.
+The purpose of this document is to demonstrate how [NIfTI MRS](https://docs.google.com/document/d/1tC4ugzGUPLoqHRGrWvOcGCuCh_Dogx_uu0cxKub0EsM/edit?usp=sharing) may be imported into the [`R`](https://www.r-project.org/) programming language, and perform basic processing steps with just few lines of code. Whilst a dedicated MRS analysis packages, such as [`spant`](https://martin3141.github.io/spant/), are recommended for typical MRS analysis tasks in [`R`](https://www.r-project.org/), this example code is provided to aid software developers interested in developing their own tools to process NIfTI MRS files.
 
 Firstly we download an example file, available from the [NIfTI MRS github repository](https://github.com/wexeee/mrs_nifti_standard), and load the excellent [`RNifti`](https://github.com/jonclayden/RNifti) library to read the data:
 
