@@ -5,11 +5,11 @@ The purpose of this document is to demonstrate how [NIfTI
 MRS](https://docs.google.com/document/d/1tC4ugzGUPLoqHRGrWvOcGCuCh_Dogx_uu0cxKub0EsM/edit?usp=sharing)
 may be imported into the [`R`](https://www.r-project.org/) programming
 language, and perform basic processing steps with just few lines of
-code. Whilst a dedicated MRS analysis packages, such as
+code. Whilst dedicated MRS analysis packages, such as
 [`spant`](https://martin3141.github.io/spant/), are recommended for
 typical MRS analysis tasks in [`R`](https://www.r-project.org/), this
 example code is provided to aid software developers interested in
-developing their own tools to process NIfTI MRS files.
+writing their own tools to process NIfTI MRS files.
 
 Firstly we download an example file, available from the [NIfTI MRS
 github repository](https://github.com/wexeee/mrs_nifti_standard), and
@@ -47,10 +47,55 @@ xform(nifti_mrs)
     ## attr(,"code")
     ## [1] 2
 
-MRS specific information is stored in the NIfTI header extension (code
-44) and formatted as JSON. Here we load the
-[`jsonlite`](https://arxiv.org/abs/1403.2805) library and output the
-first few items:
+a full header listing may also be output for inspection:
+
+``` r
+niftiHeader(nifti_mrs)
+```
+
+    ## NIfTI-2 header
+    ##     sizeof_hdr: 540
+    ##       dim_info: 0
+    ##            dim: 4  16  16  16  1024  1  1  1
+    ##      intent_p1: 0
+    ##      intent_p2: 0
+    ##      intent_p3: 0
+    ##    intent_code: 0 (Unknown)
+    ##       datatype: 1792 (COMPLEX128)
+    ##         bitpix: 128
+    ##    slice_start: 0
+    ##         pixdim: 1.00000  14.37500  14.37500  12.50000  0.00025  0.00000  0.00000  0.00000
+    ##     vox_offset: 928
+    ##      scl_slope: 0
+    ##      scl_inter: 0
+    ##      slice_end: 0
+    ##     slice_code: 0 (Unknown)
+    ##     xyzt_units: 0
+    ##        cal_max: 0
+    ##        cal_min: 0
+    ## slice_duration: 0
+    ##        toffset: 0
+    ##        descrip: 
+    ##       aux_file: 
+    ##     qform_code: 2 (Aligned Anat)
+    ##     sform_code: 2 (Aligned Anat)
+    ##      quatern_b: 0
+    ##      quatern_c: 0
+    ##      quatern_d: 1
+    ##      qoffset_x: 124.014
+    ##      qoffset_y: 138.4644
+    ##      qoffset_z: -101.4674
+    ##         srow_x: -14.375  0.000  0.000  124.014
+    ##         srow_y: 0.0000  -14.3750  0.0000  138.4644
+    ##         srow_z: 0.0000  0.0000  12.5000  -101.4674
+    ##    intent_name: mrs_v0_2
+    ##          magic: n+2
+
+MRS data processing requires information beyond what is defined in the
+standard header, therefore we make use of the NIfTI MRS header extension
+(ecode 44), where additional parameters are stored in JSON format. Here
+we load the [`jsonlite`](https://arxiv.org/abs/1403.2805) library and
+output the first few items:
 
 ``` r
 ext_str  <- extension(nifti_mrs, 44, "character")
@@ -77,12 +122,13 @@ head(ext_json)
     ## $MixingTime
     ## NULL
 
-To plot a voxel we simply treat `nifti_mrs` as a multidimensional array,
-with the first three dimensions being the x, y and z voxel coordinates
-(8, 8, 12) and the fourth dimension as the FID. Once the FID has been
-extracted we perform a Fourier transform and shift the data with
+To plot a spectrum we simply treat `nifti_mrs` as a multidimensional
+array, with the first three dimensions being the x, y and z voxel
+coordinates (8, 8, 12) and the fourth dimension as the FID. Once the FID
+has been extracted, we perform a Fourier transform and shift the data
+with
 [`pracma::fftshift`](https://cran.r-project.org/web/packages/pracma/index.html)
-to show 0 Hz in the center of the spectrum to conform with convention:
+to show 0 Hz in the centre of the spectrum:
 
 ``` r
 library(pracma)
@@ -93,7 +139,7 @@ plot(Re(spec), type = "l", xlab = "frequency [a.u.]", ylab = "intensity [a.u.]")
 
 ![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
-Finally, basic phasing and line-broading steps may be performed to aid
+Finally, basic phasing and line-broadening steps may be performed to aid
 visual interpretation:
 
 ``` r
