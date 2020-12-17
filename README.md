@@ -104,7 +104,7 @@ ext_json <- fromJSON(ext_str)
 head(ext_json)
 ```
 
-    ## $TransmitterFrequency
+    ## $SpectrometerFrequency
     ## [1] 49.86013
     ## 
     ## $ResonantNucleus
